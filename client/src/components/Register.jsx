@@ -18,6 +18,7 @@ const Register = () => {
         email,
         password,
       }),
+      credentials:'include'
     })
       .then((res) => res.json())
       .then((data) => {

@@ -22,9 +22,9 @@ export const registerUser = async (req, res) => {
         [userId, userName, email, encryptedPassword, token]
       );
       res.cookie("accessToken", token, {
-        httpOnly: true,
+        httpOnly: true
       });
-      return res.status(201).json({ message: "register",userName,email });
+      return res.status(201).json({ message: "register", userName, email });
     }
   } catch (error) {
     console.log("error while registering user", error);
@@ -40,17 +40,24 @@ export const loginUser = async (req, res) => {
     );
     if (isUserPresent.rows.length) {
       let userDetails = isUserPresent.rows;
-      let { user_name,user_email,user_password, user_refresh_token } = userDetails[0];
+      let { user_name, user_email, user_password, user_refresh_token } =
+        userDetails[0];
       bcrypt
         .compare(password, user_password)
         .then((result) => {
           if (result) {
             res.cookie("accessToken", user_refresh_token, {
-              httpOnly: true,
+              httpOnly: true
             });
-            return res.status(200).json({ message: "login",userName:user_name,email:user_email});
+            return res
+              .status(200)
+              .json({
+                message: "login",
+                userName: user_name,
+                email: user_email,
+              });
           } else
-            return res.status(200).json({ message: "invalid credentials."});
+            return res.status(200).json({ message: "invalid credentials." });
         })
         .catch((err) => console.log("something went wrong in passwords", err));
     } else {
@@ -71,5 +78,16 @@ export const getMyDetails = async (req, res) => {
     return res.status(200).json(myDetails.rows[0]);
   } catch (error) {
     console.log("error while fetching my details", error);
+  }
+};
+
+export const logOut = async (_, res) => {
+  try {
+    res.clearCookie("accessToken",{
+        httpOnly:true
+    });
+    return res.status(200).json({ message: "user logout success." });
+  } catch (error) {
+    console.log("error while logging out the user.", error);
   }
 };
