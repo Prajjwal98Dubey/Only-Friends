@@ -24,7 +24,7 @@ export const registerUser = async (req, res) => {
       res.cookie("accessToken", token, {
         httpOnly: true,
       });
-      return res.status(201).json({ message: "user registered." });
+      return res.status(201).json({ message: "register",userName,email });
     }
   } catch (error) {
     console.log("error while registering user", error);
@@ -35,12 +35,12 @@ export const loginUser = async (req, res) => {
   const { user, password } = req.body; // user can be user_email or user_name
   try {
     let isUserPresent = await appPool.query(
-      "SELECT USER_PASSWORD,USER_REFRESH_TOKEN FROM USERS WHERE USER_NAME = $1 OR USER_EMAIL=$1",
+      "SELECT USER_NAME,USER_EMAIL,USER_PASSWORD,USER_REFRESH_TOKEN FROM USERS WHERE USER_NAME = $1 OR USER_EMAIL=$1",
       [user]
     );
     if (isUserPresent.rows.length) {
       let userDetails = isUserPresent.rows;
-      let { user_password, user_refresh_token } = userDetails[0];
+      let { user_name,user_email,user_password, user_refresh_token } = userDetails[0];
       bcrypt
         .compare(password, user_password)
         .then((result) => {
@@ -48,9 +48,9 @@ export const loginUser = async (req, res) => {
             res.cookie("accessToken", user_refresh_token, {
               httpOnly: true,
             });
-            return res.status(200).json({ message: "login success." });
+            return res.status(200).json({ message: "login",userName:user_name,email:user_email});
           } else
-            return res.status(200).json({ message: "invalid credentials." });
+            return res.status(200).json({ message: "invalid credentials."});
         })
         .catch((err) => console.log("something went wrong in passwords", err));
     } else {
