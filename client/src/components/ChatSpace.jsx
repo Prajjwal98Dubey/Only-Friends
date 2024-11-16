@@ -3,18 +3,45 @@
 // import { useEffect } from "react"
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import { ALL_CHATS, NEW_MESSAGE } from "../backendapi";
 
 const ChatSpace = ({ friendName, setIsChatOpen }) => {
   const socket = useRef();
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
   const scrollRef = useRef(null);
+  const prevChats = useRef(true);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     socket.current = io("ws://localhost:8082");
     socket.current.emit("create-room", {
       sender: JSON.parse(localStorage.getItem("of-auth")).userName,
       receiver: friendName,
     });
+    if (prevChats.current) {
+      prevChats.current = false;
+      fetch(
+        ALL_CHATS +
+          `?roomId=${[
+            JSON.parse(localStorage.getItem("of-auth")).userName,
+            friendName,
+          ]
+            .sort()
+            .join("-")}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setChats([...data.chats]);
+          setIsLoading(false);
+        })
+        .catch((err) =>
+          console.log("CLIENT error while fetching previous records.", err)
+        );
+    }
   }, [friendName]);
   useEffect(() => {
     socket.current.on("chat-message", (payload) => {
@@ -22,7 +49,7 @@ const ChatSpace = ({ friendName, setIsChatOpen }) => {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     });
   }, [chats]);
-  const handleMessageSend = () => {
+  const handleMessageSend = async () => {
     socket.current.emit("chat-message", {
       sender: JSON.parse(localStorage.getItem("of-auth")).userName,
       receiver: friendName,
@@ -38,6 +65,18 @@ const ChatSpace = ({ friendName, setIsChatOpen }) => {
     ]);
     setMessage("");
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    await fetch(NEW_MESSAGE, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        sender: JSON.parse(localStorage.getItem("of-auth")).userName,
+        receiver: friendName,
+        message,
+      }),
+      credentials: "include",
+    });
   };
 
   return (
@@ -70,30 +109,36 @@ const ChatSpace = ({ friendName, setIsChatOpen }) => {
           </div>
         </div>
         {/* all chat space */}
-        <div ref={scrollRef} className="w-full h-[400px] overflow-y-auto">
-          {chats.map((c, index) => (
-            <div
-              key={index}
-              className={`w-full text-[#313131] flex ${
-                c.sender ===
-                JSON.parse(localStorage.getItem("of-auth")).userName
-                  ? "justify-end  "
-                  : "justify-start "
-              } `}
-            >
+        {isLoading ? (
+          <div className="flex justify-center text-2xl font-black font-doto text-black">
+            Loading...
+          </div>
+        ) : (
+          <div ref={scrollRef} className="w-full h-[400px] overflow-y-auto">
+            {chats.map((c, index) => (
               <div
-                className={`m-2 text-black w-fit h-fit text-xl font-medium flex rounded-md border border-gray-400 p-1 ${
+                key={index}
+                className={`w-full text-[#313131] flex ${
                   c.sender ===
                   JSON.parse(localStorage.getItem("of-auth")).userName
-                    ? " bg-green-500 "
-                    : " bg-gray-400"
-                }`}
+                    ? "justify-end  "
+                    : "justify-start "
+                } `}
               >
-                {c.message}
+                <div
+                  className={`m-2 text-black w-fit h-fit text-xl font-medium flex rounded-md border border-gray-400 p-1 ${
+                    c.sender ===
+                    JSON.parse(localStorage.getItem("of-auth")).userName
+                      ? " bg-green-500 "
+                      : " bg-gray-400"
+                  }`}
+                >
+                  {c.message}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
