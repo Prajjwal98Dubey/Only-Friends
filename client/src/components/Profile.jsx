@@ -1,30 +1,130 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SelectedContext } from "../contexts/SelectedContext";
 import NavBar from "./NavBar";
 import LeftSideBar from "./LeftSideBar";
-import {  LOGOUT_USER } from "../backendapi";
+import {
+  DISLIKE_ICON,
+  LIKE_ICON,
+  LOGOUT_ICON,
+  SUPER_LIKE_ICON,
+  USER_ICON_TWO,
+} from "../icons";
+import { LOGOUT_USER } from "../backendapi";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { setSelected } = useContext(SelectedContext);
-  const navigate = useNavigate()
+  const [logoutHover, setLogOutHover] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     setSelected("/profile");
   }, [setSelected]);
-  const handleLogOut = async()=>{
-    await fetch(LOGOUT_USER,{
-        method:'GET',
-        credentials:"include"
-    }).then((res)=>res.json()).then(()=>{
-        localStorage.removeItem("of-auth")
-        navigate('/')
-    }).catch((err)=>console.log("CLIENT error while logging out",err))
-  }
+  const handleLogOut = async () => {
+    await fetch(LOGOUT_USER, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then(() => {
+        localStorage.removeItem("of-auth");
+        navigate("/");
+      })
+      .catch((err) => console.log("CLIENT error while logging out", err));
+  };
   return (
     <>
       <NavBar />
-      <LeftSideBar />
-      <div className="flex justify-center"><button onClick={handleLogOut} className="w-[100px] h-[30px] bg-red-600 hover:bg-red-400 rounded-md text-white font-bold">logout</button></div>
+      <div className="flex">
+        <LeftSideBar />
+        <div className="flex ml-[30px]">
+          <div className="w-[650px] h-[400px] m-2 rounded-md shadow-lg border border-gray-300 shadow-gray-300 bg-gray-100">
+            <div className="flex justify-center mt-6">
+              <div className="w-[100px] h-[100px] border border-gray-600 rounded-full p-2 flex justify-center items-center shadow-md shadow-red-300">
+                <img
+                  src={USER_ICON_TWO}
+                  alt="loading..."
+                  className="w-[90px] h-[90px]"
+                />
+              </div>
+            </div>
+            <div className="flex justify-center text-[#313131] text-2xl font-extrabold font-doto mt-2">
+              {JSON.parse(localStorage.getItem("of-auth"))
+                .userName.charAt(0)
+                .toUpperCase() +
+                JSON.parse(localStorage.getItem("of-auth")).userName.substring(
+                  1
+                )}
+            </div>
+            <div className="flex justify-center">
+              <div className="text-xl font-bold m-2 flex justify-center items-center">
+                0
+              </div>
+              <div className="m-2 flex justify-center items-center">
+                <img
+                  src={SUPER_LIKE_ICON}
+                  alt="loading"
+                  className="w-[30px] h-[30px]"
+                />
+              </div>
+              <div className="text-xl font-bebas font-medium m-2 flex justify-center items-center">
+                Super Likes
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <div className="text-xl font-bold m-2 flex justify-center items-center">
+                0
+              </div>
+              <div className="m-2 flex justify-center items-center">
+                <img
+                  src={LIKE_ICON}
+                  alt="loading"
+                  className="w-[30px] h-[30px]"
+                />
+              </div>
+              <div className="text-xl font-bebas font-medium m-2 flex justify-center items-center">
+                Likes
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <div className="text-xl font-bold m-2 flex justify-center items-center">
+                0
+              </div>
+              <div className="m-2 flex justify-center items-center">
+                <img
+                  src={DISLIKE_ICON}
+                  alt="loading"
+                  className="w-[30px] h-[30px]"
+                />
+              </div>
+              <div className="text-xl font-bebas font-medium m-2 flex justify-center items-center">
+                Dislikes
+              </div>
+            </div>
+            <div className="flex justify-center items-center mt-2">
+              <img
+                src={LOGOUT_ICON}
+                alt="loading"
+                className="w-[32px] h-[32px] cursor-pointer"
+                onMouseOver={() => setLogOutHover(true)}
+                onMouseLeave={() => setLogOutHover(false)}
+                onClick={handleLogOut}
+              />
+              <div className="relative">
+                {logoutHover && (
+                  <div className="absolute bg-gray-500 p-1 rounded-md text-black w-[80px] h-[25px] text-[12px] font-bold left-0 top-0 flex justify-center items-center">
+                    logout
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="w-[650px] h-[400px] m-2 rounded-md shadow-lg border border-gray-300 shadow-gray-300 bg-gray-100">
+            <p className="text-2xl font-bold font-mono text-center">
+              Dashboard
+            </p>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
