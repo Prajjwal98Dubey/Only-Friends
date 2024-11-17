@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 import bcrypt from "bcrypt";
 
 export const registerUser = async (req, res) => {
-  const { userName, email, password } = req.body;
+  const { userName, email, password, age, gender } = req.body;
   try {
     let isUserPresent = await appPool.query(
       "SELECT * FROM USERS WHERE USER_NAME = $1 OR USER_EMAIL=$2",
@@ -21,8 +21,12 @@ export const registerUser = async (req, res) => {
         "INSERT INTO USERS (USER_ID,USER_NAME,USER_EMAIL,USER_PASSWORD,USER_REFRESH_TOKEN) VALUES ($1,$2,$3,$4,$5)",
         [userId, userName, email, encryptedPassword, token]
       );
+      await appPool.query(
+        "INSERT INTO USER_DETAILS (USER_ID,SUPER_LIKES,LIKES,DISLIKES,ACCEPTED,REJECTED,GENDER,AGE) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
+        [userId, 0, 0, 0, 0, 0, gender, age]
+      );
       res.cookie("accessToken", token, {
-        httpOnly: true
+        httpOnly: true,
       });
       return res.status(201).json({ message: "register", userName, email });
     }
@@ -47,15 +51,13 @@ export const loginUser = async (req, res) => {
         .then((result) => {
           if (result) {
             res.cookie("accessToken", user_refresh_token, {
-              httpOnly: true
+              httpOnly: true,
             });
-            return res
-              .status(200)
-              .json({
-                message: "login",
-                userName: user_name,
-                email: user_email,
-              });
+            return res.status(200).json({
+              message: "login",
+              userName: user_name,
+              email: user_email,
+            });
           } else
             return res.status(200).json({ message: "invalid credentials." });
         })
@@ -83,8 +85,8 @@ export const getMyDetails = async (req, res) => {
 
 export const logOut = async (_, res) => {
   try {
-    res.clearCookie("accessToken",{
-        httpOnly:true
+    res.clearCookie("accessToken", {
+      httpOnly: true,
     });
     return res.status(200).json({ message: "user logout success." });
   } catch (error) {

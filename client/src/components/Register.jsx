@@ -6,6 +6,8 @@ const Register = () => {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [gender, setGender] = useState("");
+  const [age, setAge] = useState(0);
   const navigate = useNavigate();
   const handleRegisterUser = async () => {
     await fetch(REGISTER_USER, {
@@ -17,8 +19,10 @@ const Register = () => {
         userName: username,
         email,
         password,
+        gender,
+        age,
       }),
-      credentials:'include'
+      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
@@ -68,6 +72,37 @@ const Register = () => {
               placeholder="enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <div className="flex justify-center items-center">
+            <form>
+              <input
+                type="radio"
+                id="male"
+                name="gender"
+                value="M"
+                onChange={(e) => setGender(e.target.value)}
+              />
+              <label htmlFor="male">Male</label>
+              <input
+                type="radio"
+                id="female"
+                name="gender"
+                value="F"
+                onChange={(e) => setGender(e.target.value)}
+              />
+              <label htmlFor="female">Female</label>
+            </form>
+          </div>
+          <div className="flex justify-center">
+            <span className="m-1 flex justify-center items-center">
+              Enter your age
+            </span>
+            <input
+              type="number"
+              className="w-[60px] h-[35px] rounded-md border border-gray-400 m-1 p-1 text-[#313131]"
+              value={age}
+              onChange={(e) => setAge(e.target.value)}
             />
           </div>
           <div className="flex justify-center items-center">
