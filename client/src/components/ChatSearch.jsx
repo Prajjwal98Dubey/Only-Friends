@@ -26,13 +26,13 @@ const ChatSearch = () => {
   }, [searchQuery]);
   return (
     <>
-      <div className="w-full flex justify-center mt-[150px] mr-[40px]">
+      <div className="w-full flex justify-center mt-[250px] mr-[40px]">
         <div>
           <input
             type="text"
             placeholder="find people ..."
             autoFocus
-            className="w-[600px] h-[45px] rounded-md border border-gray-500 shadow-md shadow-gray-400 font-doto text-xl font-bold  p-1"
+            className="w-[600px] h-[45px] rounded-md border border-gray-500 shadow-md shadow-gray-400 font-doto text-xl font-bold p-1"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

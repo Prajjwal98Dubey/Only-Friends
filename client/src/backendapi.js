@@ -9,3 +9,7 @@ export const USERS_SEARCH = "http://localhost:8081/api/v1/search/users?q=";
 //chat
 export const NEW_MESSAGE = "http://localhost:8081/api/v1/chat/new";
 export const ALL_CHATS = "http://localhost:8081/api/v1/chat/all";
+
+// random person
+
+export const GENERATE_RANDOM_PERSON = "http://localhost:8081/api/v1/random/r"

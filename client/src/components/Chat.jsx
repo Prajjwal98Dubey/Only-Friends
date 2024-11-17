@@ -3,6 +3,7 @@ import LeftSideBar from "./LeftSideBar";
 import NavBar from "./NavBar";
 import { SelectedContext } from "../contexts/SelectedContext";
 import ChatSearch from "./ChatSearch";
+import RandomPerson from "./RandomPerson";
 const Chat = () => {
   const { setSelected } = useContext(SelectedContext);
 
@@ -14,7 +15,8 @@ const Chat = () => {
       <NavBar />
       <div className="flex ">
         <LeftSideBar />
-        <ChatSearch />
+        <RandomPerson />
+        {/* <ChatSearch /> */}
       </div>
     </>
   );
