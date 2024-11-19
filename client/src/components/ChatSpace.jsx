@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
-
-// import { useEffect } from "react"
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import { ALL_CHATS, NEW_MESSAGE } from "../backendapi";
+import { ALL_CHATS, NEW_MESSAGE, USER_INTERESTS } from "../backendapi";
+import { LIKE_ICON, SUPER_LIKE_ICON } from "../icons";
 
 const ChatSpace = ({ friendName, setIsChatOpen }) => {
   const socket = useRef();
@@ -78,6 +77,22 @@ const ChatSpace = ({ friendName, setIsChatOpen }) => {
       credentials: "include",
     });
   };
+  const handleUserInterest = async (para) => {
+    await fetch(
+      USER_INTERESTS +
+        `?friendUserId=${friendName}&sl=${para === "sl" ? true : false}&l=${
+          para === "l" ? true : false
+        }`,
+      {
+        method: "PUT",
+        credentials: "include",
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => console.log("user interest data", data))
+      .catch((err) => console.log(err));
+    return;
+  };
 
   return (
     <>
@@ -106,6 +121,22 @@ const ChatSpace = ({ friendName, setIsChatOpen }) => {
             >
               send
             </button>
+            <div className="m-1">
+              <img
+                src={SUPER_LIKE_ICON}
+                onClick={() => handleUserInterest("sl")}
+                alt="loading"
+                className="w-[25px] h-[25px] cursor-pointer hover:scale-105"
+              />
+            </div>
+            <div className="m-1">
+              <img
+                src={LIKE_ICON}
+                alt="loading"
+                onClick={() => handleUserInterest("l")}
+                className="w-[25px] h-[25px] cursor-pointer hover:scale-105"
+              />
+            </div>
           </div>
         </div>
         {/* all chat space */}

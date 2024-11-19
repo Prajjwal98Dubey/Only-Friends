@@ -9,16 +9,34 @@ import {
   SUPER_LIKE_ICON,
   USER_ICON_TWO,
 } from "../icons";
-import { LOGOUT_USER } from "../backendapi";
+import { LOGOUT_USER, MY_DETAILS } from "../backendapi";
 import { useNavigate } from "react-router-dom";
-
 const Profile = () => {
   const { setSelected } = useContext(SelectedContext);
   const [logoutHover, setLogOutHover] = useState(false);
+  const [superLike, setSuperLikes] = useState(0);
+  const [likes, setLikes] = useState(0);
+  const [dislikes, setDisLikes] = useState(0);
   const navigate = useNavigate();
   useEffect(() => {
     setSelected("/profile");
   }, [setSelected]);
+  useEffect(() => {
+    const getMyDetails = async () => {
+      await fetch(MY_DETAILS, {
+        method: "GET",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setSuperLikes(data.super_likes);
+          setLikes(data.likes);
+          setDisLikes(data.dislikes);
+        })
+        .catch((err) => console.log(err));
+    };
+    getMyDetails();
+  }, []);
   const handleLogOut = async () => {
     await fetch(LOGOUT_USER, {
       method: "GET",
@@ -57,7 +75,7 @@ const Profile = () => {
             </div>
             <div className="flex justify-center">
               <div className="text-xl font-bold m-2 flex justify-center items-center">
-                0
+                {superLike}
               </div>
               <div className="m-2 flex justify-center items-center">
                 <img
@@ -72,7 +90,7 @@ const Profile = () => {
             </div>
             <div className="flex justify-center">
               <div className="text-xl font-bold m-2 flex justify-center items-center">
-                0
+                {likes}
               </div>
               <div className="m-2 flex justify-center items-center">
                 <img
@@ -87,7 +105,7 @@ const Profile = () => {
             </div>
             <div className="flex justify-center">
               <div className="text-xl font-bold m-2 flex justify-center items-center">
-                0
+                {dislikes}
               </div>
               <div className="m-2 flex justify-center items-center">
                 <img

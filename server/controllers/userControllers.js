@@ -27,6 +27,7 @@ export const registerUser = async (req, res) => {
       );
       res.cookie("accessToken", token, {
         httpOnly: true,
+        maxAge: 24 * 60 * 60 * 30 * 1000,
       });
       return res.status(201).json({ message: "register", userName, email });
     }
@@ -52,6 +53,7 @@ export const loginUser = async (req, res) => {
           if (result) {
             res.cookie("accessToken", user_refresh_token, {
               httpOnly: true,
+              maxAge: 24 * 60 * 60 * 30 * 1000,
             });
             return res.status(200).json({
               message: "login",
@@ -73,8 +75,9 @@ export const loginUser = async (req, res) => {
 export const getMyDetails = async (req, res) => {
   const { userId } = req.user;
   try {
-    let myDetails = await appPool.query(
-      "SELECT USER_NAME,USER_EMAIL FROM USERS WHERE USER_ID=$1",
+    let myDetails;
+    myDetails = await appPool.query(
+      "SELECT SUPER_LIKES,LIKES,DISLIKES,GENDER,AGE FROM USER_DETAILS WHERE USER_ID = $1",
       [userId]
     );
     return res.status(200).json(myDetails.rows[0]);
@@ -91,5 +94,29 @@ export const logOut = async (_, res) => {
     return res.status(200).json({ message: "user logout success." });
   } catch (error) {
     console.log("error while logging out the user.", error);
+  }
+};
+
+export const superLikesAndLikesCount = async (req, res) => {
+  const { userId } = req.user;
+  let { friendUserId, sl, l } = req.query;
+  sl = sl === "true" ? true : false;
+  l = l === "true" ? true : false;
+  try {
+    let userDetails = await appPool.query(
+      "SELECT USER_ID FROM USERS WHERE USER_NAME = $1",
+      [friendUserId]
+    );
+    await appPool.query(
+      "UPDATE USER_DETAILS SET SUPER_LIKES = SUPER_LIKES+1 WHERE USER_ID = $1",
+      [userDetails.rows[0].user_id]
+    );
+    await appPool.query(
+      "INSERT INTO USER_INTERESTS (USER_ID,FRIEND_USER_ID,SUPER_LIKES,LIKES) VALUES ($1,$2,$3,$4)",
+      [userId, friendUserId, sl, l]
+    );
+    return res.status(200).json({ message: "count updates success." });
+  } catch (error) {
+    console.log("error while updating the count of super likes", error);
   }
 };
