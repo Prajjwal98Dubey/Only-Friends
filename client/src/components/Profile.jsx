@@ -74,48 +74,54 @@ const Profile = () => {
                 )}
             </div>
             <div className="flex justify-center">
-              <div className="text-xl font-bold m-2 flex justify-center items-center">
-                {superLike}
-              </div>
-              <div className="m-2 flex justify-center items-center">
-                <img
-                  src={SUPER_LIKE_ICON}
-                  alt="loading"
-                  className="w-[30px] h-[30px]"
-                />
-              </div>
-              <div className="text-xl font-bebas font-medium m-2 flex justify-center items-center">
-                Super Likes
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <div className="text-xl font-bold m-2 flex justify-center items-center">
-                {likes}
-              </div>
-              <div className="m-2 flex justify-center items-center">
-                <img
-                  src={LIKE_ICON}
-                  alt="loading"
-                  className="w-[30px] h-[30px]"
-                />
-              </div>
-              <div className="text-xl font-bebas font-medium m-2 flex justify-center items-center">
-                Likes
+              <div className="flex justify-center w-[200px]">
+                <div className="text-xl font-bold m-2 flex justify-center items-center w-[100px]">
+                  {superLike}
+                </div>
+                <div className="m-2 flex justify-center items-center w-[100px]">
+                  <img
+                    src={SUPER_LIKE_ICON}
+                    alt="loading"
+                    className="w-[30px] h-[30px]"
+                  />
+                </div>
+                <div className="text-xl font-bebas font-medium m-2 flex justify-center items-center w-[200px]">
+                  Super Likes
+                </div>
               </div>
             </div>
             <div className="flex justify-center">
-              <div className="text-xl font-bold m-2 flex justify-center items-center">
-                {dislikes}
+              <div className="flex justify-center w-[200px]">
+                <div className="text-xl font-bold m-2 flex justify-center items-center w-[100px]">
+                  {likes}
+                </div>
+                <div className="m-2 flex justify-center items-center w-[100px]">
+                  <img
+                    src={LIKE_ICON}
+                    alt="loading"
+                    className="w-[30px] h-[30px]"
+                  />
+                </div>
+                <div className="text-xl font-bebas font-medium m-2 flex justify-center items-center w-[200px]">
+                  Likes
+                </div>
               </div>
-              <div className="m-2 flex justify-center items-center">
-                <img
-                  src={DISLIKE_ICON}
-                  alt="loading"
-                  className="w-[30px] h-[30px]"
-                />
-              </div>
-              <div className="text-xl font-bebas font-medium m-2 flex justify-center items-center">
-                Dislikes
+            </div>
+            <div className="flex justify-center">
+              <div className="flex justify-center w-[200px]">
+                <div className="text-xl font-bold m-2 flex justify-center items-center w-[100px]">
+                  {dislikes}
+                </div>
+                <div className="m-2 flex justify-center items-center w-[100px]">
+                  <img
+                    src={DISLIKE_ICON}
+                    alt="loading"
+                    className="w-[30px] h-[30px]"
+                  />
+                </div>
+                <div className="text-xl font-bebas font-medium m-2 flex justify-center items-center w-[200px]">
+                  Dislikes
+                </div>
               </div>
             </div>
             <div className="flex justify-center items-center mt-2">
