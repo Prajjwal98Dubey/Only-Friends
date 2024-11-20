@@ -9,14 +9,18 @@ import {
   SUPER_LIKE_ICON,
   USER_ICON_TWO,
 } from "../icons";
-import { LOGOUT_USER, MY_DETAILS } from "../backendapi";
+import { GET_MY_MATCHES, LOGOUT_USER, MY_DETAILS } from "../backendapi";
 import { useNavigate } from "react-router-dom";
+import ChatSpace from "./ChatSpace";
 const Profile = () => {
   const { setSelected } = useContext(SelectedContext);
   const [logoutHover, setLogOutHover] = useState(false);
   const [superLike, setSuperLikes] = useState(0);
   const [likes, setLikes] = useState(0);
   const [dislikes, setDisLikes] = useState(0);
+  const [message, setMessage] = useState([]);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [friendName, setFriendName] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
     setSelected("/profile");
@@ -35,7 +39,17 @@ const Profile = () => {
         })
         .catch((err) => console.log(err));
     };
+    const getMyMatches = async () => {
+      await fetch(GET_MY_MATCHES, {
+        method: "GET",
+        credentials: "include",
+      })
+        .then((res) => res.json())
+        .then(({ result }) => setMessage(result))
+        .catch((err) => console.log(err));
+    };
     getMyDetails();
+    getMyMatches();
   }, []);
   const handleLogOut = async () => {
     await fetch(LOGOUT_USER, {
@@ -55,7 +69,7 @@ const Profile = () => {
       <div className="flex">
         <LeftSideBar />
         <div className="flex ml-[30px]">
-          <div className="w-[650px] h-[400px] m-2 rounded-md shadow-lg border border-gray-300 shadow-gray-300 bg-gray-100">
+          <div className="w-[550px] h-[400px] m-2 rounded-md shadow-lg border border-gray-300 shadow-gray-300 bg-gray-100">
             <div className="flex justify-center mt-6">
               <div className="w-[100px] h-[100px] border border-gray-600 rounded-full p-2 flex justify-center items-center shadow-md shadow-red-300">
                 <img
@@ -142,10 +156,36 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <div className="w-[650px] h-[400px] m-2 rounded-md shadow-lg border border-gray-300 shadow-gray-300 bg-gray-100">
-            <p className="text-2xl font-bold font-mono text-center">
-              Dashboard
-            </p>
+          <div className="w-[810px] h-[400px] m-2 rounded-md shadow-lg border border-gray-300 shadow-gray-300 bg-gray-100 overflow-auto">
+            <p className="text-2xl font-bold font-mono text-center">Messages</p>
+            <div className="flex justify-center">
+              <div>
+                {message.map((m, index) => (
+                  <div
+                    key={index}
+                    className="w-[500px] h-[40px] rounded-md border border-gray-400 shadow-md shadow-gray-400 bg-[#313131] p-1 text-white font-bold flex justify-center hover:bg-[#393939] hover:cursor-pointer"
+                    onClick={() => {
+                      setFriendName(m.friend_user_id);
+                      setIsChatOpen(true);
+                    }}
+                  >
+                    <span className="flex justify-center m-[2px]">
+                      Chat with
+                    </span>
+                    <span className="flex justify-center m-[2px] font-extrabold font-doto">
+                      {m.friend_user_id.charAt(0).toUpperCase() +
+                        m.friend_user_id.substring(1)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              {isChatOpen && (
+                <ChatSpace
+                  friendName={friendName}
+                  setIsChatOpen={setIsChatOpen}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

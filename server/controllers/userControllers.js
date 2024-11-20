@@ -120,3 +120,31 @@ export const superLikesAndLikesCount = async (req, res) => {
     console.log("error while updating the count of super likes", error);
   }
 };
+
+export const checkIfYouLikedOrSuperLiked = async (req, res) => {
+  const { userId } = req.user;
+  try {
+    let details = await appPool.query(
+      "SELECT FRIEND_USER_ID FROM USER_INTERESTS WHERE USER_ID = $1",
+      [userId]
+    );
+    let responseDetails = [];
+    details.rows.forEach((d) => responseDetails.push(d.friend_user_id));
+    return res.status(200).json({ results: responseDetails });
+  } catch (error) {
+    console.log("error while checking if u liked or superliked.");
+  }
+};
+
+export const getMyMatches = async (req, res) => {
+  const { userId } = req.user;
+  try {
+    let friends = await appPool.query(
+      "SELECT FRIEND_USER_ID FROM USER_INTERESTS WHERE USER_ID = $1",
+      [userId]
+    );
+    return res.status(200).json({ result: friends.rows });
+  } catch (error) {
+    console.log("error while getting all my matches", error);
+  }
+};
