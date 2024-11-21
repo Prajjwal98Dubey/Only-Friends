@@ -2,11 +2,24 @@ import appPool from "../db/connectdb.js";
 
 export const generateRandomPeople = async (req, res) => {
   const { userId } = req.user;
+  let interested_age = req.query.interested_age ? req.query.interested_age : "";
+  let interested_gender = req.query.interested_gender
+    ? req.query.interested_gender
+    : "";
   try {
-    let allUsers = await appPool.query("SELECT USER_ID,USER_NAME FROM USERS");
+    let allUsers = await appPool.query(
+      "SELECT USERS.USER_ID,USERS.USER_NAME,USER_DETAILS.GENDER,USER_DETAILS.AGE FROM USERS INNER JOIN USER_DETAILS ON USERS.USER_ID = USER_DETAILS.USER_ID"
+    );
     let updatedAllUsers = [];
     for (let i = 0; i < allUsers.rows.length; i++) {
-      if (allUsers.rows[i].user_id === userId) continue;
+      if (
+        allUsers.rows[i].user_id === userId ||
+        (interested_gender.length > 0 &&
+          allUsers.rows[i].gender !== interested_gender) ||
+        (interested_age.length > 0 &&
+          parseInt(allUsers.rows[i].age) > parseInt(interested_age))
+      )
+        continue;
       else updatedAllUsers.push(allUsers.rows[i]);
     }
     let randomPersonIndex = Math.floor(Math.random() * updatedAllUsers.length);

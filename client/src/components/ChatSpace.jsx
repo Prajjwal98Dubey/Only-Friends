@@ -119,7 +119,7 @@ const ChatSpace = ({ friendName, setIsChatOpen }) => {
 
   return (
     <>
-      <div className="w-[650px] h-[500px] rounded-md shadow-md shadow-gray-400 border border-gray-300 fixed bg-white left-[30%] top-[20%]">
+      <div className="w-[650px] h-[500px] rounded-md shadow-md shadow-gray-400 border border-gray-300 fixed bg-white left-[30%] top-[20%] z-10">
         <div className="w-full h-[50px] bg-[#313131] text-white text-2xl font-bold font-sour flex justify-center items-center">
           {friendName}
           {isLiked && (

@@ -12,6 +12,7 @@ import {
 import { GET_MY_MATCHES, LOGOUT_USER, MY_DETAILS } from "../backendapi";
 import { useNavigate } from "react-router-dom";
 import ChatSpace from "./ChatSpace";
+import { FilterContext } from "../contexts/FilterContext";
 const Profile = () => {
   const { setSelected } = useContext(SelectedContext);
   const [logoutHover, setLogOutHover] = useState(false);
@@ -21,6 +22,7 @@ const Profile = () => {
   const [message, setMessage] = useState([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [friendName, setFriendName] = useState("");
+  const { setInGender, setInAge } = useContext(FilterContext);
   const navigate = useNavigate();
   useEffect(() => {
     setSelected("/profile");
@@ -59,6 +61,9 @@ const Profile = () => {
       .then((res) => res.json())
       .then(() => {
         localStorage.removeItem("of-auth");
+        setInGender("");
+        setInAge("");
+        setSelected("/chat");
         navigate("/");
       })
       .catch((err) => console.log("CLIENT error while logging out", err));

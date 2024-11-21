@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GENERATE_RANDOM_PERSON } from "../backendapi";
 import ChatSpace from "./ChatSpace";
+import { FilterContext } from "../contexts/FilterContext";
 
 const RandomPerson = () => {
   const [userName, setUserName] = useState("");
@@ -11,13 +12,18 @@ const RandomPerson = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [passPerson, setPassPerson] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const { isFilter, inGender, inAge } = useContext(FilterContext);
   useEffect(() => {
     const getRandomPerson = async () => {
       setIsLoading(true);
-      await fetch(GENERATE_RANDOM_PERSON, {
-        method: "GET",
-        credentials: "include",
-      })
+      await fetch(
+        GENERATE_RANDOM_PERSON +
+          `?interested_gender=${inGender}&interested_age=${inAge}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           setUserName(data.user_name);
@@ -32,7 +38,7 @@ const RandomPerson = () => {
         );
     };
     getRandomPerson();
-  }, [passPerson]);
+  }, [passPerson, isFilter, inGender, inAge]);
 
   return (
     <>
