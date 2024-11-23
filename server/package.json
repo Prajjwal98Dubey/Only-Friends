@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "chat":"nodemon chatserver.js"
+    "chat": "nodemon chatserver.js",
+    "status": "nodemon onlinestatus.js"
   },
   "keywords": [],
   "author": "",

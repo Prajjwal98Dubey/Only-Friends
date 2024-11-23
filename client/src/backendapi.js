@@ -16,3 +16,7 @@ export const ALL_CHATS = "http://localhost:8081/api/v1/chat/all";
 
 // random person
 export const GENERATE_RANDOM_PERSON = "http://localhost:8081/api/v1/random/r";
+
+// url for online status check.
+
+export const CHECK_ONLINE_STATUS = "ws://localhost:8083/";

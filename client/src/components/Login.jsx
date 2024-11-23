@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LOGIN_USER } from "../backendapi";
-
+import { CHECK_ONLINE_STATUS, LOGIN_USER } from "../backendapi";
+import { io } from "socket.io-client";
 const Login = () => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
@@ -16,7 +16,7 @@ const Login = () => {
         user,
         password,
       }),
-      credentials:'include'
+      credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
@@ -25,6 +25,10 @@ const Login = () => {
             "of-auth",
             JSON.stringify({ userName: data.userName, email: data.email })
           );
+          let socket = io(CHECK_ONLINE_STATUS);
+          socket.emit("details", {
+            userName: JSON.parse(localStorage.getItem("of-auth")).userName,
+          });
           navigate("/");
         }
       })

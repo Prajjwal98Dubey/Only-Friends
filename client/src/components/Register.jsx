@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { REGISTER_USER } from "../backendapi";
+import { CHECK_ONLINE_STATUS, REGISTER_USER } from "../backendapi";
+import { io } from "socket.io-client";
 
 const Register = () => {
   const [username, setUserName] = useState("");
@@ -31,6 +32,10 @@ const Register = () => {
             "of-auth",
             JSON.stringify({ userName: data.userName, email: data.email })
           );
+          let socket = io(CHECK_ONLINE_STATUS);
+          socket.emit("details", {
+            userName: JSON.parse(localStorage.getItem("of-auth")).userName,
+          });
           navigate("/");
         }
       })
