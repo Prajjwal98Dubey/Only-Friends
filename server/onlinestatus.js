@@ -10,7 +10,7 @@ const io = new Server(server, {
   },
 });
 
-let onlineMap = new Map();
+export let onlineMap = new Map();
 
 io.on("connection", (socket) => {
   socket.on("details", (payload) => {

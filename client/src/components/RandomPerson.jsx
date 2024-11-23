@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { GENERATE_RANDOM_PERSON } from "../backendapi";
 import ChatSpace from "./ChatSpace";
 import { FilterContext } from "../contexts/FilterContext";
+import { ACTIVE_USER_ICON } from "../icons";
 
 const RandomPerson = () => {
   const [userName, setUserName] = useState("");
@@ -12,6 +13,7 @@ const RandomPerson = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [passPerson, setPassPerson] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [userOnlineStatus, setUserOnlineStatus] = useState(false);
   const { isFilter, inGender, inAge } = useContext(FilterContext);
   useEffect(() => {
     const getRandomPerson = async () => {
@@ -31,6 +33,7 @@ const RandomPerson = () => {
           setAge(data.age);
           setSuperLikes(data.superLikes);
           setLikes(data.likes);
+          setUserOnlineStatus(data.online_status);
           setIsLoading(false);
         })
         .catch((err) =>
@@ -49,6 +52,16 @@ const RandomPerson = () => {
           <div className="w-[750px] h-[170px] rounded-md  bg-[#313131] text-white border border-gray-400 shadow-lg shadow-gray-300">
             <div className="text-white flex justify-center items-center p-1 text-2xl font-bold">
               {userName.charAt(0).toLocaleUpperCase() + userName.substring(1)}
+              {userOnlineStatus && (
+                <div className="absolute text-white left-[60%] text-[12px] flex justify-center items-center ">
+                  <div className="m-1">
+                    <img src={ACTIVE_USER_ICON} alt="loading" />
+                  </div>
+                  <div className="text-gray-300 text-[13px] m-1">
+                    active now
+                  </div>
+                </div>
+              )}
             </div>
             <div className="flex justify-center">
               <div className="m-1 font-bold">{age}</div>

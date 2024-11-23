@@ -1,4 +1,5 @@
 import appPool from "../db/connectdb.js";
+import { onlineMap } from "../onlinestatus.js";
 
 export const generateRandomPeople = async (req, res) => {
   const { userId } = req.user;
@@ -28,6 +29,10 @@ export const generateRandomPeople = async (req, res) => {
       "SELECT SUPER_LIKES,LIKES,GENDER,AGE FROM USER_DETAILS WHERE USER_ID = $1",
       [user_id]
     );
+    let onlineStatus = false;
+    if (onlineMap.has(user_name)) {
+      onlineStatus = true;
+    }
     return res.status(200).json({
       user_id,
       user_name,
@@ -35,6 +40,7 @@ export const generateRandomPeople = async (req, res) => {
       likes: randomPersonDetails.rows[0].likes,
       gender: randomPersonDetails.rows[0].gender,
       age: randomPersonDetails.rows[0].age,
+      online_status: onlineStatus,
     });
   } catch (error) {
     console.log("error while generating random people", error);

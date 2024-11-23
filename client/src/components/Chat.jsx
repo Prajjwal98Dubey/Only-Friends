@@ -4,6 +4,7 @@ import NavBar from "./NavBar";
 import { SelectedContext } from "../contexts/SelectedContext";
 import RandomPerson from "./RandomPerson";
 import ApplyFilters from "./ApplyFilters";
+import OnlineStatusComp from "./OnlineStatusComp";
 const Chat = () => {
   const { setSelected } = useContext(SelectedContext);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -13,6 +14,7 @@ const Chat = () => {
   return (
     <>
       <NavBar />
+      <OnlineStatusComp />
       <div className="flex ">
         <LeftSideBar />
         <div>
